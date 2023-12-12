@@ -167,7 +167,7 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
   - 论文名称：EXTENDING CONTEXT WINDOW OF LARGE LANGUAGE MODELS VIA POSITION INTERPOLATION
   - 论文链接：https://arxiv.org/pdf/2306.1559
   - 方法：位置插值线性向下缩放了输入位置索引以匹配原始的上下文窗口大小，而不是外推超过训练时所用的上下文长度，因为这可能会导致灾难性的较高的注意力分数，从而完全破坏了自注意力机制。
-    ![PI interpolation](./1.深度学习基础知识/images/PI.png)
+![PI interpolation](./1.深度学习基础知识/images/PI.png)
     - 左半部分为预训练阶段的位置向量范围[0,2048]
     - 右上角为长度外推的部分(2048,4096]
     - 左下角为位置插值法，将[0,4096]的值降采样到[0,2048]预训练阶段支持的范围
@@ -355,7 +355,7 @@ for k, v in layer_norm.named_parameters():
   $Perplexity(W)=P(w_{1}w_{2}...w_{N})^{-\frac{1}{N}}=\sqrt[N]{\frac{1}{P(w_{1}w_{2}...w_{N})}}$
   - 从上面公式可以分析得到：句子越好（概率大），困惑度越小，也就是模型对句子越不困惑。
 - 语言模型中的使用：perplexity可以从cross entropy中得到，而cross entropy又是除了语言模型以外的文本生成任务（如机器翻译，摘要生成等）也常用的loss，所以我们也可以把perplexity拓展到语言模型外，用cross entropy来计算文本生成里的困惑度。机器翻译的框架OpenNMT就使用了困惑度作为一个指标：
-  ![困惑度计算](./2.自然语言处理基础知识/images/ppl.png)
+![困惑度计算](./2.自然语言处理基础知识/images/ppl.png)
 
 
 ## 大语言模型基础知识
