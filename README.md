@@ -20,7 +20,7 @@
 	- [2.参数高效微调(PEFT)](3.大语言模型基础知识/2.参数高效微调(PEFT))
 	- [3.经典开源LLM介绍](3.大语言模型基础知识/3.经典开源LLM介绍)
 	- [4.RLHF介绍](3.大语言模型基础知识/4.RLHF介绍)
-	- [5.CoT、ToT、GoT介绍](3.大语言模型基础知识/5.CoT、ToT、GoT介绍)
+	- [5.CoT、ToT介绍](3.大语言模型基础知识/5.CoT、ToT介绍)
 	- [6.SFT训练](3.大语言模型基础知识/6.SFT训练)
 - [4.大语言模型推理](4.大语言模型推理)
 	- [1.Huggingface推理参数介绍](4.大语言模型推理/1.Huggingface推理参数介绍)
@@ -178,7 +178,7 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
 
 [参考1](https://www.reddit.com/r/LocalLLaMA/comments/14lz7j5/ntkaware_scaled_rope_allows_llama_models_to_have/), [参考2](https://zhuanlan.zhihu.com/p/645263524)
 
-- 在这项工作中，作者针对当前RoPE插值方法的不足，提出了一种改进方案。通过应用神经切线核（NTK）理论，作者发现现有的线性插值方法在处理距离接近的标记时存在局限性。因此，作者设计了一种非线性插值方案，以改变RoPE的基数。这种方法在保持位置信息完整的同时，有效地提高了上下文大小。实验证明，该方法在没有进行模型微调的情况下就能显著减小困惑度，成为一种非常有效的优化策略。作者相信，通过进一步的微调，这个方法的效果将得到更好的提升。
+- 在这项工作中，作者针对当前RoPE插值方法的不足，提出了一种改进方案。通过应用神经切线核（NTK）理论，作者发现现有的线性插值方法在处理距离接近的 token 时存在局限性。因此，作者设计了一种非线性插值方案，以改变 RoPE 的基数。这种方法在保持位置信息完整的同时，有效地提高了上下文大小。实验证明，该方法在没有进行模型微调的情况下就能显著减小困惑度，成为一种非常有效的优化策略。作者相信，通过进一步的微调，这个方法的效果将得到更好的提升。
 
 #### Pre Norm 与 Post Norm 的区别？
 
@@ -193,10 +193,16 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
 - Post Norm 的结构迁移性能更加好，也就是说在 Pretraining 中，Pre Norm 和 Post Norm 都能做到大致相同的结果，但是 Post Norm 的 Finetune 效果明显更好
 
 ### 深度神经网络基础
-#### BN 和 LN 的区别
+#### Batch Normalization (BN) 和 Layer Normalization (LN) 的区别
+[参考1](https://blog.csdn.net/jiyangsb/article/details/124511484)
+- Batch Normalization (BN) 与 Layer Normalization (LN) 定义：
+  - BN 和 LN 都是通过以下公式进行计算，只是作用的维度不一样，Batch Normalization 是对这批样本的同一维度特征做规范化处理， Layer Normalization 是对这单个样本的所有维度特征做规范化处理
+  $y = \frac{x-E(x)}{\sqrt{\text{Var}(x) + \epsilon}} \cdot \gamma + \beta$
+  其中 $\gamma$ 和 $\beta$ 是可学习参数
+  - 通过以下图片可以对 BN、LN 有更好的理解，其中蓝色元素都放在一起，计算 mean 和 var，带入上式计算，其中 。
+  ![BN介绍](https://img-blog.csdnimg.cn/b49f1c8279e9448aa71388cabf69552d.png)
 
-- BN 与 LN 定义：Batch Normalization 是对这批样本的同一维度特征做规范化处理， Layer Normalization 是对这单个样本的所有维度特征做规范化处理
-![BN介绍](https://img-blog.csdnimg.cn/b49f1c8279e9448aa71388cabf69552d.png)
+- BN 与 LN 区别介绍：
   - 区别：
     - LN中同层神经元输入拥有相同的均值和方差，不同的输入样本有不同的均值和方差；BN中则针对不同神经元输入计算均值和方差，同一个batch中的输入拥有相同的均值和方差
   - 为什么 NLP 使用 LN 而不是 BN？
@@ -206,13 +212,15 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
   - 相同点：标准化技术目的是让每一层的分布稳定下来，让后面的层可以在前面层的基础上安心学习，加快模型收敛
 
 
-#### BN 中的可学习参数量分析
+#### BN 中的参数量与可学习参数量分析
 - 对于一个NCHW（批次大小，通道数，高度，宽度）格式的输入张量，Batch Normalization（BN）层通常包含两组可学习参数：缩放因子（scale）和偏移（shift）。
   - 缩放因子（scale）参数：对于每个通道，都有一个缩放因子参数。因此，缩放因子参数的数量等于通道数（C）。
   - 偏移（shift）参数：同样，对于每个通道，都有一个偏移参数。因此，偏移参数的数量也等于通道数（C）。
-  - 所以，总共的可学习参数数量等于缩放因子参数和偏移参数的数量之和，即 **2C**。
+  - 均值参数 (mean)：均值参数等于通道数 (C)
+  - 方差参数 (var)：方差参数等于通道数 (C)
+  - 所以，总共的可学习参数数量等于缩放因子参数和偏移参数的数量之和，即 **2C**。总参数量是 **4C**
 
-- 基于 pytorch 的示例 BN 示例代码
+- 基于 pytorch 的 BN 示例代码
 ```python
 # CV Example
 import torch
@@ -228,7 +236,9 @@ for k, v in m.named_parameters():
 ```
 
 #### LN 中的可学习参数量分析
-
+- 在 Layer Normalization 中，同样有 scale 和 shift 这两个参数允许模型学习调整输入数据的缩放和偏置，以便更好地适应训练数据的统计分布
+- 对于文本数据
+  - 输入 tensor size 为 BxSxD，一般只在 D 维度上做归一化计算，计算得到的均值和方差尺寸为 BxSx1，gamma 和 beta 的尺寸为 D，所以可学习参数量为 **2xD**
 ```python
 # NLP Example
 import torch
@@ -241,6 +251,22 @@ for k, v in layer_norm.named_parameters():
   print(k, v.shape)
 # -> weight torch.Size([10])
 # -> bias torch.Size([10])
+```
+
+- 对于图像数据
+  - 输入 tensor size 为 NxCxHxW，一般在 CxHxW 维度上进行归一化计算，计算得到的均值和方差尺寸为 Nx1x1x1，gamma 和 beta 的尺寸为 CxHxW，可学习参数量为 **2xCxHxW**
+```python
+import torch
+import torch.nn as nn
+
+N, C, H, W = 20, 5, 10, 15
+input = torch.randn(N, C, H, W)
+layer_norm = nn.LayerNorm([C, H, W])
+output = layer_norm(input)
+for k, v in layer_norm.named_parameters():
+  print(k, v.shape)
+# -> weight torch.Size([5, 10, 15])
+# -> bias torch.Size([5, 10, 15])
 ```
 
 
@@ -307,44 +333,100 @@ for k, v in layer_norm.named_parameters():
 
 
 #### 为什么 llama 的 tokenizer 需要单独针对中文语料进行词表扩充
-
+- 百川2的技术报告中提到过 tokenizer 的设计需要考虑两个重要因素：
+  - 高压缩率：以实现高效的推理
+  - 适当大小的词汇表：以确保每个词嵌入的充分训练
+- 因为原生LLaMA对中文的支持很弱，tokenizer 中的中文字符和词汇较少，导致一个中文汉字往往被切分为多个 token，不满足上面所提到的高压缩率原则，所以需要进行词表扩充
 ### 经典NLP模型
 #### Bert
 
 - Bert的预训练主要包含两个任务，MLM和NSP，Masked Language Model任务可以理解为完形填空，随机mask每一个句子中15%的词，用其上下文来做预测；Next Sentence Prediction任务选择一些句子对A与B，其中50%的数据B是A的下一条句子，剩余50%的数据B是语料库中随机选择的，学习其中的相关性。BERT 预训练阶段实际上是将上述两个任务结合起来，同时进行，然后将所有的 Loss 相加
 ### 困惑度(perplexity)
 #### 困惑度 (perplexity) 介绍
+[参考1](https://paddlepedia.readthedocs.io/en/latest/tutorials/deep_learning/metrics/perplexity.html)，[参考2](https://zhuanlan.zhihu.com/p/44107044), [参考3](https://zhuanlan.zhihu.com/p/114432097)
+
+- 困惑度定义
+  - Perplexity，中文翻译为困惑度，是信息论中的一个概念，其可以用来衡量一个随机变量的不确定性，也可以用来衡量模型训练的好坏程度。通常情况下，一个随机变量的Perplexity数值越高，代表其不确定性也越高；一个模型推理时的Perplexity数值越高，代表模型表现越差，反之亦然。
+- 计算方式：
+  - 对于句子s（词语w的序列）
+  $S = W_{1}, W_{2},...,W_{k}$
+  - 它的概率为 $P(S) = P(W_{1}, W_{2}, ..., W_{k}) = p(W_{1})P(W_{2}|W_{1})...P(W_{k}|W_{1},W_{2},...,W_{k-1})$
+  - 困惑度与测试集上的句子概率相关，其基本思想是：给测试集的句子赋予较高概率值的语言模型较好,当语言模型训练完之后，测试集中的句子都是正常的句子，那么训练好的模型就是在测试集上的概率越高越好，公式如下:
+  $Perplexity(W)=P(w_{1}w_{2}...w_{N})^{-\frac{1}{N}}=\sqrt[N]{\frac{1}{P(w_{1}w_{2}...w_{N})}}$
+  - 从上面公式可以分析得到：句子越好（概率大），困惑度越小，也就是模型对句子越不困惑。
+- 语言模型中的使用：perplexity可以从cross entropy中得到，而cross entropy又是除了语言模型以外的文本生成任务（如机器翻译，摘要生成等）也常用的loss，所以我们也可以把perplexity拓展到语言模型外，用cross entropy来计算文本生成里的困惑度。机器翻译的框架OpenNMT就使用了困惑度作为一个指标：
+  ![困惑度计算](./2.自然语言处理基础知识/images/ppl.png)
+
 
 ## 大语言模型基础知识
 ### 训练框架介绍(Megatron-lm、DeepSpeed)
 #### Megatron-lm 介绍
 
-[参考1](https://arxiv.org/abs/1909.08053), [参考2](https://www.bilibili.com/video/BV1nB4y1R7Yz/?spm_id_from=333.880.my_history.page.click&vd_source=4485ae5d861b0e733e8796b93c824c9e), [参考3](https://huggingface.co/blog/zh/megatron-training)
+[参考1](https://arxiv.org/abs/1909.08053), [参考2](https://www.bilibili.com/video/BV1nB4y1R7Yz/?spm_id_from=333.880.my_history.page.click&vd_source=4485ae5d861b0e733e8796b93c824c9e), [参考3](https://huggingface.co/blog/zh/megatron-training), [参考4](https://blog.csdn.net/zwqjoy/article/details/132507636), [参考5](https://www.paddlepaddle.org.cn/support/news?action=detail&id=2913)
+
+- NVIDIA 出品的 Megatron-LM 是一个基于 PyTorch 的分布式训练框架，用来训练基于 Transformer 的大型语言模型。Megatron-LM 综合应用了数据并行（Data Parallelism），张量并行（Tensor Parallelism）和流水线并行（Pipeline Parallelism）来复现 GPT-3.
+
+- 【背景】
+  - 随着计算资源的普及和数据集的增大，模型参数的数量呈指数级增长。然而，训练这样规模庞大的模型面临着一些挑战：
+    - **显存限制**： 即便是目前最大的GPU主内存也难以容纳这些模型的参数。举例来说，一个1750亿参数的GPT-3模型需要约700GB的参数空间，对应的梯度约为700GB，而优化器状态还需额外的1400GB，总计需求高达2.8TB。
+    - **计算挑战**： 即使我们设法将模型适应单个GPU（例如通过在主机内存和设备内存之间进行参数交换），模型所需的大量计算操作也会导致训练时间大幅延长。举个例子，使用一块NVIDIA V100 GPU来训练拥有1750亿参数的GPT-3模型，大约需要耗时288年。
+    - **并行策略挑战**： 不同的并行策略对应不同的通信模式和通信量，这也是一个需要考虑的挑战。
+
+- 并行策略介绍：其中张量并行和流水线并行属于模型并行范畴
+  - **数据并行 (DP)**: 数据并行模式会在每个worker之上复制一份模型，这样每个worker都有一个完整模型的副本。输入数据集是分片的，一个训练的小批量数据将在多个worker之间分割；worker定期汇总它们的梯度，以确保所有worker看到一个一致的权重版本
+  - **张量并行 (TP)**: 把某一个层做切分，放置到不同设备之上，也可以理解为把矩阵运算分配到不同的设备之上，比如把某个矩阵乘法切分成为多个矩阵乘法放到不同设备之上。
+  - **流水线并行 (PP)**: 把模型不同的层放到不同设备之上，比如前面几层放到一个设备之上，中间几层放到另外一个设备上，最后几层放到第三个设备之上。
+![数据并行与模型并行示意图](./3.大语言模型基础知识/images/megatron1.png)
+
+![流水线并行和张量并行示意图](./3.大语言模型基础知识/images/megatron2.png)
 
 
-#### TP 和 PP 通信量对比
+
+#### TP 和 PP 通信对比
+[参考](https://blog.csdn.net/zwqjoy/article/details/132507636)
+- 通信方式：
+  - 流水线并行 (PP)：通信在流水线阶段相邻的切分点之上，通信类型是P2P通信，单次通信数据量较少但是比较频繁，而且因为流水线的特点，会产生GPU空闲时间，这里称为流水线气泡（Bubble）
+  - 张量并行 (TP)：通信发生在每层的前向传播和后向传播过程之中，通信类型是 all-reduce，不但单次通信数据量大，并且通信频繁。
+- 通信设备：张量并行一般都在同一个机器之上，所以通过 NVLink 来进行加速，对于流水线并行，一般通过 Infiniband 交换机进行连接。
+
+#### MLP 的切分为什么 A 采用列切割，B采用行切割？
+[参考](https://blog.csdn.net/zwqjoy/article/details/132507636)
+
+![MLP切割方式](./3.大语言模型基础知识/images/megatron3.png)
+
+![原因讲解](./3.大语言模型基础知识/images/megatron4.png)
 
 
-
-#### DDP 具体原理介绍，通信的算子操作具体是什么？
-
-
+#### DDP 具体原理介绍, Ring-AllReduce 原理？
+[参考1](https://zhuanlan.zhihu.com/p/617133971), [参考2](https://zhuanlan.zhihu.com/p/504957661)
+- 分布式数据并行，采用Ring AllReduce的通讯方式，实际中多用于多机场景
+  - 受通讯负载不均的影响，DP一般用于单机多卡场景。因此，DDP作为一种更通用的解决方案出现了，既能多机，也能单机。DDP首先要解决的就是通讯问题：将Server上的通讯压力均衡转到各个Worker上。实现这一点后，可以进一步去Server，留Worker。
+  - Ring-AllReduce 通过定义网络环拓扑的方式，将通讯压力均衡地分到每个GPU上，使得跨机器的数据并行（DDP）得以高效实现。
+    - 实现分为两个步骤: Reduce-Scatter和All-Gather
+  - DP和DDP的总通讯量相同，但因负载不均的原因，DP需要耗费更多的时间搬运数据
 
 #### DeepSpeed 介绍
+[参考](https://zhuanlan.zhihu.com/p/513571706)
+
+- DeepSpeed的核心是ZeRO(Zero Redundancy Optimizer)，简单来说，它是一种显存优化的数据并行(data parallelism, DP)方案。在过去两年DeepSpeed团队发表了三篇ZeRO相关的论文，提出了去除冗余参数、引入CPU和内存、引入NVMe等方法，从始至终都围绕着一个目标：将显存优化进行到底。
+
+- ZeRO将模型训练阶段，每张卡中显存内容分为两类：
+  - 模型状态（model states）: 模型参数（fp16）、模型梯度（fp16）和Adam状态（fp32的模型参数备份，fp32的momentum和fp32的variance）。假设模型参数量
+ $\Phi$， 则共需要 $2\Phi+2\Phi+(4\Phi+4\Phi+4\Phi)=16\Phi$ 字节存储，可以看到，Adam 状态占比 75%。
+  - 剩余状态（residual states）: 除了模型状态之外的显存占用，包括激活值（activation）、各种临时缓冲区（buffer）以及无法使用的显存碎片（fragmentation）。
+  - 来看一个例子，GPT-2含有1.5B个参数，如果用fp16格式，只需要3GB显存，但是模型状态实际上需要耗费24GB！
 ### 参数高效微调(PEFT)
 #### Pattern-Exploiting Training（PET）
 [参考](https://mp.weixin.qq.com/s?__biz=MzIwMTc4ODE0Mw%3D%3D&chksm=96ea6fe7a19de6f1be86b965e268df1b9c6320810cf32b6d64ddd3d238bf9088be41fb36adfe&idx=1&mid=2247512167&scene=21&sn=cc7695d92362e3b18a6e8969fb14dc27#wechat_redirect)
 - 它通过人工构建的模版与 BERT 的 MLM 模型结合，能够起到非常好的零样本、小样本乃至半监督学习效果，而且该思路比较优雅漂亮，因为它将预训练任务和下游任务统一起来了
 
-#### P-tuning and P-tuningv2
-- P-tuning（GPT Understands, Too）（[参考](https://blog.csdn.net/c9Yv2cf9I06K2A9E/article/details/115648821)）
+#### P-tuning
+[参考1](https://arxiv.org/pdf/2103.10385.pdf), [参考2](https://blog.csdn.net/c9Yv2cf9I06K2A9E/article/details/115648821)
+- P-tuning（GPT Understands, Too）
   - P-tuning 重新审视了关于模版的定义，放弃了“模版由自然语言构成”这一常规要求，从而将模版的构建转化为连续参数优化问题，虽然简单，但却有效
   - P-tuning直接使用[unused*]的token来构建模版，不关心模版的自然语言性
     ![ptuning](./3.大语言模型基础知识/images/ptuning.png)
   - 借助 P-tuning，GPT 在 SuperGLUE 上的成绩首次超过了同等级别的 BERT 模型，这颠覆了一直以来“GPT 不擅长
-
-- P-tuningv2
-
 
 
 #### LoRA
@@ -352,9 +434,7 @@ for k, v in layer_norm.named_parameters():
 [参考1](https://zhuanlan.zhihu.com/p/617211910)，[参考2](https://zhuanlan.zhihu.com/p/643560888#:~:text=%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E6%8C%91%E6%88%98-,7.Lora%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B2%E4%B8%80%E4%B8%8B%EF%BC%9F,-%E5%89%8D%E9%9D%A2%E5%9C%A84)
 - 低秩自适应 (Low-Rank Adaptation, LoRA)：冻结了预训练的模型权重，并将可训练的秩分解矩阵注入到 Transformer 架构的每一层，极大地减少了下游任务的可训练参数的数量，有效提升预训练模型在下游任务上的 finetune 效率
     ![lora](./3.大语言模型基础知识/images/lora.png)
-<!-- <div style="text-align: center;">
-    <img src="./3.大语言模型基础知识/images/lora.png" alt="Image Description" width="300">
-</div> -->
+
 
 - 【背景】之前的 PEFT 方法是 adapter/prefix/promp/P-tuning，但是Adapter会引入很强的推理延迟（只能串行），prefix/prompt/P-tuning很难练，而且要占用context length，变相的降低模型能力
 - 【详解】具体来说，就是考虑到语言模型（LLM 尤其如此）的参数的低秩属性（low intrinsic dimension），或者说过参数化，在做 finetune 的时候不做 full-finetune，而是用一个降维矩阵A和一个升维矩阵B去做finetune。如果我们认为原来的模型的某个参数矩阵为  $W_{0}$，那么可以认为原来经过全微调的参数矩阵为 $W_{0} + \Delta(W)$ ，但考虑到前面的低秩属性，在 lora 中我们可以简单认为  $\Delta(W)=BA$  (B 是降维矩阵，A是升维矩阵，其中 A 正常随机数初始化，**B 全 0 初始化**，从而保证训练初期的稳定性)，其中 BA 的秩相当于是你认为的模型实际的秩。这样的话在做推理的时候， $h=W_{0}x + BAx$ ，根本不会引入推理延迟，因为你只需要把训好的 lora 参数 $AB$ 加进模型初始权重 $W_{0}$ 中就可以了。在 Transformer 中 self-attention 和 mlp 模块都有对应的 params 矩阵，对应加上 lora 即可。
@@ -366,6 +446,15 @@ for k, v in layer_norm.named_parameters():
 - 使用 RoPE 位置编码
 
 #### Llama2
+[参考](https://zhuanlan.zhihu.com/p/645381497)
+
+- 开发并发布了 Llama 2，包含预训练的大语言模型和微调大语言模型，模型规模有 7b、13b、70b 这三种（还有个没有开源的 34b 版本）
+  - 预训练语料增加了 40%
+  - context length 从 2048 提升到 4096
+  - 70b模型使用了 grouped-query attention （GQA）
+  - 提供了微调版本的 LLM，称为 Llama 2-Chat，针对对话用例进行了优化
+  - Llama2 在大多数基准测试中都优于开源聊天模型，并且基于有用性和安全性方向进行人工评估，期望称为封闭源模型（chatgpt等）的合适替代品
+  - 提供了对 Llama 2-Chat 微调和安全改进的方法的详细描述，为开源社区做出贡
 
 #### ChatGLM and ChatGLM2
 - ChatGLM
@@ -376,8 +465,59 @@ for k, v in layer_norm.named_parameters():
   - 使用 RoPE 位置编码
 
 #### Bloom
+[参考](https://zhuanlan.zhihu.com/p/617608656)
+- 176B 参数，decoder only
 - BLOOM 使用 Alibi 位置编码
+- ROOTS语料库上训练，该数据集包括46种自然语言和13种编程语言（共59种）的数百个来源
 
+
+#### InternLM-XComposer
+[参考](https://zhuanlan.zhihu.com/p/661465576)
+- 提出了视觉语言大模型 InternLM-XComposer，具有高级的文本图像理解和组合能力
+  - **交错式文本-图像组合**：InternLM-XComposer 擅长生成与上下文相关图像交错的长篇内容，从而提升了视觉-语言交互的体验。
+    - 首先根据人工提供的指令创建文本
+    - 随后，它自动确定文本中最适合放置图像的位置，并提供相应的合适的图像描述。根据生成的描述，与依赖于文本-图像生成模型来帮助的方法不同，我们选择从大规模网络爬取的图像数据库中获取对齐的图像，以实现更真实的质量和上下文对齐。此外，它还提供了灵活性，允许用户自定义图像库。
+      - 与仅依赖于 CLIP 进行图像检索的基线方法相比，XComposer 提供了更可靠的选择最合适图像的解决方案。首先，使用 CLIP 从数据库中选择潜在的图像候选项。然后，InternLM-XComposer 利用其理解能力来识别最适合内容的图像
+  - **具有丰富多语言知识的理解**。LLM 在处理开放世界任务方面表现出了出色的通用性，这一能力归因于其广泛的训练数据，例如 LLaMA2 中使用的 2T token 训练。这一庞大数据集囊括了多个领域的广泛语义知识。相比之下，现有的视觉-语言数据集在容量和多样性方面相对受限。为了解决这些限制，我们采用了两种实际解决方案：
+    - 首先，从公共网站收集了一个包含超过 1100 万个语义概念的交错多语言视觉-语言数据集
+    - 其次，在训练流程中精心制定了预训练和微调策略，采用了主要是英文和中文的纯文本和图像-文本混合训练数据。因此，InternLM-XComposer 在理解各种图像内容和提供广泛的多语知识方面表现出了出色的能力。
+- 所提出的 InternLM-XComposer 在文本-图像理解和组合方面表现出卓越的能力。它在各种领先的视觉-语言大型模型的基准测试中取得 SOTA 的成绩，包括英文的 MME 基准测试、MMBench、Seed-Bench 以及中文的 MMBench-CN 和 CCBench（中国文化基准测试）的评估。值得注意的是，我们的方法在中文语言的基准测试中，即MMBench-CN 和 CCBench 上显著优于现有框架，展示出卓越的多语知识能力。
+![InternLM-XComposer](https://img-blog.csdnimg.cn/01142ef12ffd4199a4b7762b18e1d59b.png)
+
+
+#### CODEFUSION
+- 提出了 CODEFUSION，一个自然语言到代码（NL-to-code）的生成模型
+  - 它结合了编码器-解码器架构（Raffel et al., 2020）与扩散过程。编码器将自然语言映射为连续表示，扩散模型使用这一表示作为额外条件来去噪随机高斯噪声输入。为了生成语法正确的代码，我们随后将去噪后的嵌入输入到 transformer 解码器，通过完整的自注意力和与嵌入话语的交叉注意力，获得代码 token 的概率分布。最后，我们在每个索引选择最高概率的 token。
+  - 为了预训练 CODEFUSION 进行代码生成，我们将连续段落去噪（CPD）任务扩展到代码领域。具体来说，我们只对代码中对应于标识符或目标语言内置关键词的 token 应用噪声。这个去噪任务使模型能够学习关键代码 token（如变量名、函数名和控制流内置函数）之间的关系。
+  - 我们发现，与自回归模型相比，CODEFUSION 产生了更多样化的代码（n-gram 比例更高，嵌入相似性更低，编辑距离更高）。CPD 目标，它使模型偏向于学习以语境感知的方式去除噪声，并配以能够访问完整去噪表示的解码器，共同使 CODEFUSION 在与 GENIE 比较时（一个文本扩散模型），生成了 48.5% 更多语法正确的代码（平均跨三种语言）。我们在三种不同语言的自然语言到代码上评估 CODEFUSION：Python，Bash 和 Microsoft Excel 中的条件格式化规则。我们的结果表明，CODEFUSION的（7500万参数）top-1 结果与更大的最新系统（3.5亿–1750亿参数）相当或更好。在 top-3 和 top-5 中，CODEFUSION 的表现优于所有基线。
+  ![CODEFUSION](https://img-blog.csdnimg.cn/d5863f62deb44ec6bff63d7ecec02963.png)
+
+
+#### baichuan2
+[参考](https://zhuanlan.zhihu.com/p/657487567)
+- 本文提出了 Baichuan2
+  - 提出 baichuan2-7b 和 baichuan2-13b，这两个模型都是在2.6万亿令牌上进行训练的，比 Baichuan 1 的数据集大了一倍多。
+    - 在像 MMLU、CMMLU 和 C-Eval 等一般基准上，Baichuan 2-7B 的性能比 Baichuan 1-7B 提高了近 30%。具体来说，Baichuan 2 优化了数学和代码问题的性能
+      - GSM8K 和 humaneval 几乎涨点一倍
+      - 在医疗和法律上也有提升，比如 MedQA 和 JEC-QA 数据集
+  - 提出 Baichuan 2-7B-Chat 和 Baichuan 2-13B-Chat，经过微调后的对话模型
+  - 为了推动研究合作和持续改进，还发布了 Baichuan 2 在各个训练阶段的检查点，从 2000 亿 token 到完整的 2.6 万亿 token
+  - 分享一些通过训练 Baichuan 2 获得的试验、错误和经验教训
+
+#### Code Llama
+[参考](https://zhuanlan.zhihu.com/p/657487373)
+
+- 发布了 Code Llama，基于 Llama 2 的一系列大型代码语言模型，提供了在开放模型中的最先进性能、填充能力、支持大输入上下文以及零-shot编程任务指令跟随能力。
+  - 提供多个版本以涵盖各种应用：
+    - 基础模型（Code Llama）
+    - Python 专业化版本（Code Llama - Python）
+    - 指令跟随模型（Code Llama - Instruct）
+  - 每个版本分别具有 7B、13B 和 34B 参数，所有模型都是在 16k token 序列上训练的，并在最多包含 100k token 的输入上进行长序列改进。
+  - 7B 和 13B 的 Code Llama 以及 Code Llama - Instruct 变种支持基于周围内容的填充。
+  - Code Llama 在多个代码基准测试中达到了开放模型中的最先进性能，分别在 HumanEval 和 MBPP 上取得了高达 53% 和 55% 的分数（优于 Llama2 70B），MultiPL-E 上精度优于所有开源模型
+  - 重点是和 Llama2 开源协议一样，Code Llama 开源并允许进行研究和商业用途
+- code llama 各系列模型训练流程如下：
+![Code Llama](https://img-blog.csdnimg.cn/473f38e248f04010b74578b9b0048dfe.png)
 ### RLHF介绍
 #### PPO (Proximal Policy Optimization) 介绍
 [参考1](https://huggingface.co/blog/deep-rl-ppo), [参考2](https://zhuanlan.zhihu.com/p/645225982)
@@ -407,14 +547,39 @@ for k, v in layer_norm.named_parameters():
   ![dpo gradient](./3.大语言模型基础知识/images/dpo_2.png)
   可以看出该 loss 的作用主要是增加喜好数据的 likelihood，降低非喜好数据的 likelihood，同时会基于隐私 reward 估计的错误程度进行加权。本文的实验表明了这种加权的重要性，因为没有加权系数的这种方法的简单版本可能会导致语言模型退化
 
-### CoT、ToT、GoT介绍
+### CoT、ToT介绍
 #### 思维链 CoT (Chain-of-Thought) 介绍
+[参考](https://www.promptingguide.ai/techniques/cot)
+- 以下样例可以发现对于一些需要推理的问题，比如数学题，模型如果使用更多的中间推理步骤能实现复杂的推理能力，比如左边直接回答问题的结果是错的，但是如果一步一步思考就能做对。
+  ![cot](./3.大语言模型基础知识/images/cot.png)
 
+- 通过 zero-shot 的 prompting 进行 COT，最经典的方式是使用 google 提出来的 `Let's think step by step"`
+  ![zero shot COT](./3.大语言模型基础知识/images/zeroshot_cot.png)
+
+
+#### 思维树 （Tree of Thoughts，ToT） 介绍
+[参考1](https://www.promptingguide.ai/zh/techniques/tot), [参考2](https://arxiv.org/abs/2305.10601)
+
+- ToT 基于思维链提示进行了总结，引导语言模型探索把思维作为中间步骤来解决通用问题。ToT 维护着一棵思维树，思维由连贯的语言序列表示，这个序列就是解决问题的中间步骤。使用这种方法，LM 能够自己对严谨推理过程的中间思维进行评估。LM 将生成及评估思维的能力与搜索算法（如广度优先搜索和深度优先搜索）相结合，在系统性探索思维的时候可以向前验证和回溯。
+![tot](./3.大语言模型基础知识/images/tot.png)
+
+- ToT 需要针对不同的任务定义思维/步骤的数量以及每步的候选项数量。例如，论文中的“算 24 游戏”是一种数学推理任务，需要分成 3 个思维步骤，每一步都需要一个中间方程。而每个步骤保留最优的（best） 5 个候选项。ToT 完成算 24 的游戏任务要执行广度优先搜索（BFS），每步思维的候选项都要求 LM 给出能否得到 24 的评估：“sure/maybe/impossible”（一定能/可能/不可能） 。作者讲到：“目的是得到经过少量向前尝试就可以验证正确（sure）的局部解，基于‘太大/太小’的常识消除那些不可能（impossible）的局部解，其余的局部解作为‘maybe’保留。”每步思维都要抽样得到 3 个评估结果。整个过程如下图所示：
+  ![tot 24](./3.大语言模型基础知识/images/tot_24.png)
 ### SFT训练
 #### SFT 训练如何提升训练效率
-
+- 数据去重降低重复数据带来的计算量：基于正则匹配，minhash 等算法
+- 训练语料中多条 concat 为一条，使不同 batch 的语料 token 数目基本一致，从而降低 padding 对计算效率的影响
+- 使用 bf16 数值类型代替 fp32 数值类型
+- 测试训练效率最高的 DP/TP/PP 参数
+- freeze transformer 模型的底层参数
 
 #### 多轮对话数据如何计算损失
+[参考](https://zhuanlan.zhihu.com/p/647733151)
+- ChatGLM2的多轮对话训练方式如下图所示，只有最后一轮对话内容参与计算loss，其他的Assistant回复内容不参与计算loss，训练数据利用不充分，造成浪费。
+![chatglm2 multiturn](./3.大语言模型基础知识/images/chatglm2.png)
+
+- ChatGLM2 多轮训练优化方式如下，训练时，多轮对话中的每个回复都被充分利用。：
+![chatglm2 multiturn optim](./3.大语言模型基础知识/images/chatglm2_optim.png)
 ## 大语言模型推理
 ### Huggingface推理参数介绍
 #### 温度系数（Temperature）对大模型推理结果的影响
