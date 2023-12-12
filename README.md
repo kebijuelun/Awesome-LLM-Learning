@@ -205,9 +205,9 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
   $y = \frac{x-E(x)}{\sqrt{\text{Var}(x) + \epsilon}} \cdot \gamma + \beta$
   其中 $\gamma$ 和 $\beta$ 是可学习参数
   - 通过以下图片可以对 BN、LN 有更好的理解，其中蓝色元素都放在一起，计算 mean 和 var，带入上式计算，其中 。
-  	<p align="center"> 
- 	 	 	 	 	 <img width="900" alt="BN介绍" src="https://img-blog.csdnimg.cn/b49f1c8279e9448aa71388cabf69552d.png"> 
- 	 	 	 	 </p> 
+  	<p align="center">
+ 	 	 	 	 	 <img width="900" alt="BN介绍" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./1.深度学习基础知识/images/BN.png">
+ 	 	 	 	 </p>
 
 
 - BN 与 LN 区别介绍：
@@ -287,7 +287,6 @@ for k, v in layer_norm.named_parameters():
   - AdamW优化器修正了Adam中权重衰减的bug，Decoupled Weight Decay Regularization
     - AdamW与Adam对比，主要是修改了权重衰减计算的方式，一上来直接修改了，而不是把权重衰减放到梯度里，由梯度更新间接缩小
     - 显存/内存消耗等其他细节和Adam没有区别
-
 ## 自然语言处理基础知识
 ### 分词器(Tokenizer)
 #### 分词（Tokenize） 介绍
