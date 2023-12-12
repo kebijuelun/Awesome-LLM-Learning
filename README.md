@@ -138,9 +138,9 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
 
 - RoPE
   - 二维情况下用复数表示的 RoPE
-    	<p align="center">
- 	 	 	 	 	 <img width="900" alt="在这里插入图片描述" src="https://img-blog.csdnimg.cn/b3760f402fe84096b8c01be93f1d8fe5.png">
- 	 	 	 	 </p>
+    	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="在这里插入图片描述" src="https://img-blog.csdnimg.cn/b3760f402fe84096b8c01be93f1d8fe5.png"> 
+ 	 	 	 	 </p> 
 
     根据复数乘法的几何意义，该变换实际上对应着向量的旋转，所以我们称之为“旋转式位置编码”
   - RoPE通过绝对位置编码的方式实现相对位置编码，综合了绝对位置编码和相对位置编码的优点
@@ -170,9 +170,9 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
   - 论文名称：EXTENDING CONTEXT WINDOW OF LARGE LANGUAGE MODELS VIA POSITION INTERPOLATION
   - 论文链接：https://arxiv.org/pdf/2306.1559
   - 方法：位置插值线性向下缩放了输入位置索引以匹配原始的上下文窗口大小，而不是外推超过训练时所用的上下文长度，因为这可能会导致灾难性的较高的注意力分数，从而完全破坏了自注意力机制。
-    	<p align="center">
- 	 	 	 	 	 <img width="900" alt="PI interpolation" src="./1.深度学习基础知识/images/PI.png">
- 	 	 	 	 </p>
+    	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="PI interpolation" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./1.深度学习基础知识/images/PI.png"> 
+ 	 	 	 	 </p> 
 
     - 左半部分为预训练阶段的位置向量范围[0,2048]
     - 右上角为长度外推的部分(2048,4096]
@@ -205,9 +205,9 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
   $y = \frac{x-E(x)}{\sqrt{\text{Var}(x) + \epsilon}} \cdot \gamma + \beta$
   其中 $\gamma$ 和 $\beta$ 是可学习参数
   - 通过以下图片可以对 BN、LN 有更好的理解，其中蓝色元素都放在一起，计算 mean 和 var，带入上式计算，其中 。
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="BN介绍" src="https://img-blog.csdnimg.cn/b49f1c8279e9448aa71388cabf69552d.png">
- 	 	 	 	 </p>
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="BN介绍" src="https://img-blog.csdnimg.cn/b49f1c8279e9448aa71388cabf69552d.png"> 
+ 	 	 	 	 </p> 
 
 
 - BN 与 LN 区别介绍：
@@ -336,9 +336,9 @@ for k, v in layer_norm.named_parameters():
 [参考](https://zhuanlan.zhihu.com/p/626621158)
 
 - 在 [Openai Tokenizer demo](https://platform.openai.com/tokenizer) 中，中文分词后的 token 数量远大于原始中文字符数目
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="openai tokenizer" src="./2.自然语言处理基础知识/images/openai_token.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="openai tokenizer" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./2.自然语言处理基础知识/images/openai_token.png"> 
+ 	 	 	 	 </p> 
 
 - 原因剖析：OpenAI 为了支持多种语言的 Tokenizer，采用了文本的一种通用表示：UTF-8 的编码方式，这是一种针对 Unicode 的可变长度字符编码方式，它将一个 Unicode 字符编码为1到4个字节的序列。
 
@@ -366,8 +366,8 @@ for k, v in layer_norm.named_parameters():
   $Perplexity(W)=P(w_{1}w_{2}...w_{N})^{-\frac{1}{N}}=\sqrt[N]{\frac{1}{P(w_{1}w_{2}...w_{N})}}$
   - 从上面公式可以分析得到：句子越好（概率大），困惑度越小，也就是模型对句子越不困惑。
 - 语言模型中的使用：perplexity可以从cross entropy中得到，而cross entropy又是除了语言模型以外的文本生成任务（如机器翻译，摘要生成等）也常用的loss，所以我们也可以把perplexity拓展到语言模型外，用cross entropy来计算文本生成里的困惑度。机器翻译的框架OpenNMT就使用了困惑度作为一个指标：
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="困惑度计算" src="./2.自然语言处理基础知识/images/ppl.png">
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="困惑度计算" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./2.自然语言处理基础知识/images/ppl.png"> 
  	 	 	 	 </p>
 ## 大语言模型基础知识
 ### 训练框架介绍(Megatron-lm、DeepSpeed)
@@ -387,14 +387,14 @@ for k, v in layer_norm.named_parameters():
   - **数据并行 (DP)**: 数据并行模式会在每个worker之上复制一份模型，这样每个worker都有一个完整模型的副本。输入数据集是分片的，一个训练的小批量数据将在多个worker之间分割；worker定期汇总它们的梯度，以确保所有worker看到一个一致的权重版本
   - **张量并行 (TP)**: 把某一个层做切分，放置到不同设备之上，也可以理解为把矩阵运算分配到不同的设备之上，比如把某个矩阵乘法切分成为多个矩阵乘法放到不同设备之上。
   - **流水线并行 (PP)**: 把模型不同的层放到不同设备之上，比如前面几层放到一个设备之上，中间几层放到另外一个设备上，最后几层放到第三个设备之上。
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="数据并行与模型并行示意图" src="./3.大语言模型基础知识/images/megatron1.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="数据并行与模型并行示意图" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/megatron1.png"> 
+ 	 	 	 	 </p> 
 
 
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="流水线并行和张量并行示意图" src="./3.大语言模型基础知识/images/megatron2.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="流水线并行和张量并行示意图" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/megatron2.png"> 
+ 	 	 	 	 </p> 
 
 
 
@@ -409,14 +409,14 @@ for k, v in layer_norm.named_parameters():
 #### MLP 的切分为什么 A 采用列切割，B采用行切割？
 [参考](https://blog.csdn.net/zwqjoy/article/details/132507636)
 
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="MLP切割方式" src="./3.大语言模型基础知识/images/megatron3.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="MLP切割方式" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/megatron3.png"> 
+ 	 	 	 	 </p> 
 
 
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="原因讲解" src="./3.大语言模型基础知识/images/megatron4.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="原因讲解" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/megatron4.png"> 
+ 	 	 	 	 </p> 
 
 
 
@@ -449,7 +449,7 @@ for k, v in layer_norm.named_parameters():
   - P-tuning 重新审视了关于模版的定义，放弃了“模版由自然语言构成”这一常规要求，从而将模版的构建转化为连续参数优化问题，虽然简单，但却有效
   - P-tuning直接使用[unused*]的token来构建模版，不关心模版的自然语言性
     	<p align="center">
- 	 	 	 	 	 <img width="900" alt="ptuning" src="./3.大语言模型基础知识/images/ptuning.png">
+ 	 	 	 	 	 <img width="900" alt="ptuning" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/ptuning.png">
  	 	 	 	 </p>
 
 
@@ -458,7 +458,7 @@ for k, v in layer_norm.named_parameters():
 [参考1](https://zhuanlan.zhihu.com/p/617211910)，[参考2](https://zhuanlan.zhihu.com/p/643560888#:~:text=%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E6%8C%91%E6%88%98-,7.Lora%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B2%E4%B8%80%E4%B8%8B%EF%BC%9F,-%E5%89%8D%E9%9D%A2%E5%9C%A84)
 - 低秩自适应 (Low-Rank Adaptation, LoRA)：冻结了预训练的模型权重，并将可训练的秩分解矩阵注入到 Transformer 架构的每一层，极大地减少了下游任务的可训练参数的数量，有效提升预训练模型在下游任务上的 finetune 效率
     	<p align="center">
- 	 	 	 	 	 <img width="900" alt="lora" src="3.大语言模型基础知识/images/lora.png">
+ 	 	 	 	 	 <img width="900" alt="lora" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/lora.png">
  	 	 	 	 </p>
 
 
@@ -509,9 +509,9 @@ for k, v in layer_norm.named_parameters():
     - 首先，从公共网站收集了一个包含超过 1100 万个语义概念的交错多语言视觉-语言数据集
     - 其次，在训练流程中精心制定了预训练和微调策略，采用了主要是英文和中文的纯文本和图像-文本混合训练数据。因此，InternLM-XComposer 在理解各种图像内容和提供广泛的多语知识方面表现出了出色的能力。
 - 所提出的 InternLM-XComposer 在文本-图像理解和组合方面表现出卓越的能力。它在各种领先的视觉-语言大型模型的基准测试中取得 SOTA 的成绩，包括英文的 MME 基准测试、MMBench、Seed-Bench 以及中文的 MMBench-CN 和 CCBench（中国文化基准测试）的评估。值得注意的是，我们的方法在中文语言的基准测试中，即MMBench-CN 和 CCBench 上显著优于现有框架，展示出卓越的多语知识能力。
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="InternLM-XComposer" src="https://img-blog.csdnimg.cn/01142ef12ffd4199a4b7762b18e1d59b.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="InternLM-XComposer" src="https://img-blog.csdnimg.cn/01142ef12ffd4199a4b7762b18e1d59b.png"> 
+ 	 	 	 	 </p> 
 
 
 
@@ -520,9 +520,9 @@ for k, v in layer_norm.named_parameters():
   - 它结合了编码器-解码器架构（Raffel et al., 2020）与扩散过程。编码器将自然语言映射为连续表示，扩散模型使用这一表示作为额外条件来去噪随机高斯噪声输入。为了生成语法正确的代码，我们随后将去噪后的嵌入输入到 transformer 解码器，通过完整的自注意力和与嵌入话语的交叉注意力，获得代码 token 的概率分布。最后，我们在每个索引选择最高概率的 token。
   - 为了预训练 CODEFUSION 进行代码生成，我们将连续段落去噪（CPD）任务扩展到代码领域。具体来说，我们只对代码中对应于标识符或目标语言内置关键词的 token 应用噪声。这个去噪任务使模型能够学习关键代码 token（如变量名、函数名和控制流内置函数）之间的关系。
   - 我们发现，与自回归模型相比，CODEFUSION 产生了更多样化的代码（n-gram 比例更高，嵌入相似性更低，编辑距离更高）。CPD 目标，它使模型偏向于学习以语境感知的方式去除噪声，并配以能够访问完整去噪表示的解码器，共同使 CODEFUSION 在与 GENIE 比较时（一个文本扩散模型），生成了 48.5% 更多语法正确的代码（平均跨三种语言）。我们在三种不同语言的自然语言到代码上评估 CODEFUSION：Python，Bash 和 Microsoft Excel 中的条件格式化规则。我们的结果表明，CODEFUSION的（7500万参数）top-1 结果与更大的最新系统（3.5亿–1750亿参数）相当或更好。在 top-3 和 top-5 中，CODEFUSION 的表现优于所有基线。
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="CODEFUSION" src="https://img-blog.csdnimg.cn/d5863f62deb44ec6bff63d7ecec02963.png">
- 	 	 	 	 </p>
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="CODEFUSION" src="https://img-blog.csdnimg.cn/d5863f62deb44ec6bff63d7ecec02963.png"> 
+ 	 	 	 	 </p> 
 
 
 
@@ -550,9 +550,9 @@ for k, v in layer_norm.named_parameters():
   - Code Llama 在多个代码基准测试中达到了开放模型中的最先进性能，分别在 HumanEval 和 MBPP 上取得了高达 53% 和 55% 的分数（优于 Llama2 70B），MultiPL-E 上精度优于所有开源模型
   - 重点是和 Llama2 开源协议一样，Code Llama 开源并允许进行研究和商业用途
 - code llama 各系列模型训练流程如下：
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="Code Llama" src="https://img-blog.csdnimg.cn/473f38e248f04010b74578b9b0048dfe.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="Code Llama" src="https://img-blog.csdnimg.cn/473f38e248f04010b74578b9b0048dfe.png"> 
+ 	 	 	 	 </p> 
 
 ### RLHF介绍
 #### PPO (Proximal Policy Optimization) 介绍
@@ -575,35 +575,35 @@ for k, v in layer_norm.named_parameters():
 
 
 - DPO 实现方式
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="dpo pipeline" src="./3.大语言模型基础知识/images/dpo.png">
- 	 	 	 	 </p>
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="dpo pipeline" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/dpo.png"> 
+ 	 	 	 	 </p> 
 
   - 直接优化 LM 来对齐人类偏好，无需建模 reward model 和强化学习阶段。基于 RL 的目标函数可以通过优化二分 cross entropy 目标来优化
   - DPO loss 表达为如下形式
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="dpo loss" src="./3.大语言模型基础知识/images/dpo_1.png">
- 	 	 	 	 </p>
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="dpo loss" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/dpo_1.png"> 
+ 	 	 	 	 </p> 
 
   其中 $y_w$ 的被人类喜好程度大于 $y_l$，DPO loss 的梯度如下
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="dpo gradient" src="./3.大语言模型基础知识/images/dpo_2.png">
- 	 	 	 	 </p>
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="dpo gradient" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/dpo_2.png"> 
+ 	 	 	 	 </p> 
 
   可以看出该 loss 的作用主要是增加喜好数据的 likelihood，降低非喜好数据的 likelihood，同时会基于隐私 reward 估计的错误程度进行加权。本文的实验表明了这种加权的重要性，因为没有加权系数的这种方法的简单版本可能会导致语言模型退化
 ### CoT、ToT介绍
 #### 思维链 CoT (Chain-of-Thought) 介绍
 [参考](https://www.promptingguide.ai/techniques/cot)
 - 以下样例可以发现对于一些需要推理的问题，比如数学题，模型如果使用更多的中间推理步骤能实现复杂的推理能力，比如左边直接回答问题的结果是错的，但是如果一步一步思考就能做对。
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="cot" src="./3.大语言模型基础知识/images/cot.png">
- 	 	 	 	 </p>
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="cot" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/cot.png"> 
+ 	 	 	 	 </p> 
 
 
 - 通过 zero-shot 的 prompting 进行 COT，最经典的方式是使用 google 提出来的 `Let's think step by step"`
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="zero shot COT" src="./3.大语言模型基础知识/images/zeroshot_cot.png">
- 	 	 	 	 </p>
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="zero shot COT" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/zeroshot_cot.png"> 
+ 	 	 	 	 </p> 
 
 
 
@@ -611,14 +611,14 @@ for k, v in layer_norm.named_parameters():
 [参考1](https://www.promptingguide.ai/zh/techniques/tot), [参考2](https://arxiv.org/abs/2305.10601)
 
 - ToT 基于思维链提示进行了总结，引导语言模型探索把思维作为中间步骤来解决通用问题。ToT 维护着一棵思维树，思维由连贯的语言序列表示，这个序列就是解决问题的中间步骤。使用这种方法，LM 能够自己对严谨推理过程的中间思维进行评估。LM 将生成及评估思维的能力与搜索算法（如广度优先搜索和深度优先搜索）相结合，在系统性探索思维的时候可以向前验证和回溯。
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="tot" src="./3.大语言模型基础知识/images/tot.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="tot" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/tot.png"> 
+ 	 	 	 	 </p> 
 
 
 - ToT 需要针对不同的任务定义思维/步骤的数量以及每步的候选项数量。例如，论文中的“算 24 游戏”是一种数学推理任务，需要分成 3 个思维步骤，每一步都需要一个中间方程。而每个步骤保留最优的（best） 5 个候选项。ToT 完成算 24 的游戏任务要执行广度优先搜索（BFS），每步思维的候选项都要求 LM 给出能否得到 24 的评估：“sure/maybe/impossible”（一定能/可能/不可能） 。作者讲到：“目的是得到经过少量向前尝试就可以验证正确（sure）的局部解，基于‘太大/太小’的常识消除那些不可能（impossible）的局部解，其余的局部解作为‘maybe’保留。”每步思维都要抽样得到 3 个评估结果。整个过程如下图所示：
-  	<p align="center">
- 	 	 	 	 	 <img width="900" alt="tot 24" src="./3.大语言模型基础知识/images/tot_24.png">
+  	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="tot 24" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/tot_24.png"> 
  	 	 	 	 </p>
 ### SFT训练
 #### SFT 训练如何提升训练效率
@@ -631,14 +631,14 @@ for k, v in layer_norm.named_parameters():
 #### 多轮对话数据如何计算损失
 [参考](https://zhuanlan.zhihu.com/p/647733151)
 - ChatGLM2的多轮对话训练方式如下图所示，只有最后一轮对话内容参与计算loss，其他的Assistant回复内容不参与计算loss，训练数据利用不充分，造成浪费。
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="chatglm2 multiturn" src="./3.大语言模型基础知识/images/chatglm2.png">
- 	 	 	 	 </p>
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="chatglm2 multiturn" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/chatglm2.png"> 
+ 	 	 	 	 </p> 
 
 
 - ChatGLM2 多轮训练优化方式如下，训练时，多轮对话中的每个回复都被充分利用。：
-	<p align="center">
- 	 	 	 	 	 <img width="900" alt="chatglm2 multiturn optim" src="./3.大语言模型基础知识/images/chatglm2_optim.png">
+	<p align="center"> 
+ 	 	 	 	 	 <img width="900" alt="chatglm2 multiturn optim" src="https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/./3.大语言模型基础知识/images/chatglm2_optim.png"> 
  	 	 	 	 </p>
 ## 大语言模型推理
 ### Huggingface推理参数介绍

@@ -32,7 +32,7 @@ def merge_markdown_files(markdown_files, output_file, content_str):
                     f.write(f"### {sub_chapter_name}\n")
                 if "./images" in sub_content:
                     sub_content = sub_content.replace(
-                        "./images", os.path.join(dir_path, "images")
+                        "./images", os.path.join("https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/", dir_path, "images")
                     )
                     sub_content = sub_content.strip()
                 f.write(sub_content)
