@@ -34,7 +34,7 @@ def merge_markdown_files(markdown_files, output_file, content_str):
                     sub_content = sub_content.replace(
                         "./images", os.path.join(dir_path, "images")
                     )
-                    sub_content.strip(" ")
+                    sub_content = sub_content.strip()
                 f.write(sub_content)
                 f.write("\n")  # 添加一个空行，以防止合并后的内容粘在一起
 
