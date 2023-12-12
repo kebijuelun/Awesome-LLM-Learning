@@ -10,7 +10,7 @@ def replace_image(filepath):
         replacement = r'<p align="center"> \n \t \t \t \t \t <img width="900" alt="\1" src="\2"> \n \t \t \t \t </p> \n'
 
         # 执行替换
-        result = re.sub(pattern, replacement, content_str).strip("\t")
+        result = re.sub(pattern, replacement, content_str).strip("\t").strip()
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(result)
 
