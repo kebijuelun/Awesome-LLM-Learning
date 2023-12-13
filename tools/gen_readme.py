@@ -32,7 +32,12 @@ def merge_markdown_files(markdown_files, output_file, content_str):
                     f.write(f"### {sub_chapter_name}\n")
                 if "./images" in sub_content:
                     sub_content = sub_content.replace(
-                        "./images", os.path.join("https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/", dir_path, "images")
+                        "./images",
+                        os.path.join(
+                            "https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/",
+                            dir_path,
+                            "images",
+                        ),
                     )
                     sub_content = sub_content.strip()
                 f.write(sub_content)
@@ -67,13 +72,9 @@ if __name__ == "__main__":
     for content in all_contents[1:]:
         content_str += "- [{}]({})\n".format(content[0], content[0]).replace("./", "")
         for sub_content in content[1]:
-            content_str += (
-                "\t- [{}]({})\n".format(
-                    os.path.basename(sub_content[0]), sub_content[0]
-                )
-                .replace("./", "")
-                .replace(".md", "")
-            )
+            content_str += "\t- [{}]({})\n".format(
+                os.path.basename(sub_content[0].replace(".md", "")), sub_content[0]
+            ).replace("./", "")
 
     # 合并所有Markdown文件内容到一个文件
     merge_markdown_files(all_contents, output_file, content_str)
