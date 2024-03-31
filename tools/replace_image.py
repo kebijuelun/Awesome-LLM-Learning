@@ -6,12 +6,10 @@ def replace_image(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
         content_str = f.read()
 
-    # 使用正则表达式找到所有匹配项
     pattern = r"!\[(.*?)\]\((.*?)\)"
 
-    # 初始化一个空字符串来构建最终的结果
     result = ""
-    last_end = 0  # 上一次匹配结束的位置
+    last_end = 0
 
     for match in re.finditer(pattern, content_str):
         start, end = match.span()  # 当前匹配项的开始和结束位置
