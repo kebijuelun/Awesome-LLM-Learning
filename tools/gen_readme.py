@@ -41,14 +41,6 @@ def merge_markdown_files(markdown_files, output_file, content_str):
                                 match_img_name,
                                 os.path.join(dir_path, match_img_name),
                             )
-                    # sub_content = sub_content.replace(
-                    #     "./images",
-                    #     os.path.join(
-                    #         # "https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/",
-                    #         dir_path,
-                    #         "images",
-                    #     ),
-                    # )
                     sub_content = sub_content.strip()
                 f.write(sub_content)
                 f.write("\n")  # 添加一个空行，以防止合并后的内容粘在一起
