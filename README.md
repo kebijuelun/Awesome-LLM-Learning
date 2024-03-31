@@ -621,15 +621,10 @@ for k, v in layer_norm.named_parameters():
 [参考](https://zhuanlan.zhihu.com/p/647733151)
 - ChatGLM2的多轮对话训练方式如下图所示，只有最后一轮对话内容参与计算loss，其他的Assistant回复内容不参与计算loss，训练数据利用不充分，造成浪费。
 
-![chatglm2](./3.大语言模型基础知识/./3.大语言模型基础知识/./images/chatglm2.png)
+![chatglm2](./3.大语言模型基础知识/./images/chatglm2.png)
 
 
-
-
-![chatglm2 multiturn](./3.大语言模型基础知识/./3.大语言模型基础知识/./images/chatglm2.png)
-
-
-- ChatGLM2 多轮训练优化方式如下，训练时，多轮对话中的每个回复都被充分利用。：
+- ChatGLM2 多轮训练优化方式如下，训练时，多轮对话中的每个回复都被充分利用：
 
 
 ![chatglm2 multiturn optim](./3.大语言模型基础知识/./images/chatglm2_optim.png)
