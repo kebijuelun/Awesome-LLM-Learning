@@ -1,4 +1,5 @@
 import os
+import re
 
 
 def read_markdown_files(directory):
@@ -30,15 +31,28 @@ def merge_markdown_files(markdown_files, output_file, content_str):
                 )
                 if sub_chapter_name != "ignore":
                     f.write(f"### {sub_chapter_name}\n")
-                if "./images" in sub_content:
-                    sub_content = sub_content.replace(
-                        "./images",
-                        os.path.join(
-                            "https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/",
-                            dir_path,
-                            "images",
-                        ),
-                    )
+                # if "./images" in sub_content:
+                if "src=" in sub_content:
+                    pattern = r'src="(.*?)"'
+                    match = re.findall(pattern, sub_content)
+                    if match:
+                        for match_img_name in match:
+                            if "https://" not in match_img_name:
+                                sub_content = sub_content.replace(
+                                    match_img_name,
+                                    os.path.join(
+                                        dir_path,
+                                        match_img_name
+                                    ),
+                                )
+                    # sub_content = sub_content.replace(
+                    #     "./images",
+                    #     os.path.join(
+                    #         # "https://github.com/kebijuelun/Awesome-LLM-Learning/blob/main/",
+                    #         dir_path,
+                    #         "images",
+                    #     ),
+                    # )
                     sub_content = sub_content.strip()
                 f.write(sub_content)
                 f.write("\n")  # 添加一个空行，以防止合并后的内容粘在一起
@@ -79,4 +93,4 @@ if __name__ == "__main__":
     # 合并所有Markdown文件内容到一个文件
     merge_markdown_files(all_contents, output_file, content_str)
 
-    print("Markdown文件合并完成！")
+    print("Markdown文件合并完成!")
