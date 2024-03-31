@@ -7,7 +7,7 @@ def replace_image(filepath):
         content_str = f.read()
         # 使用正则表达式进行替换
         pattern = r"!\[(.*?)\]\((.*?)\)"
-        replacement = r'<p align="center"> \n \t \t \t \t \t <img width="900" alt="\1" src="\2"> \n \t \t \t \t </p> \n'
+        replacement = r'<p align="center"> \n \t <img width="900" alt="\1" src="\2"> \n </p> \n'
 
         # 执行替换
         result = re.sub(pattern, replacement, content_str).strip("\t").strip()

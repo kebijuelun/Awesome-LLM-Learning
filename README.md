@@ -457,9 +457,9 @@ for k, v in layer_norm.named_parameters():
 
 [参考1](https://zhuanlan.zhihu.com/p/617211910)，[参考2](https://zhuanlan.zhihu.com/p/643560888#:~:text=%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E6%8C%91%E6%88%98-,7.Lora%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B2%E4%B8%80%E4%B8%8B%EF%BC%9F,-%E5%89%8D%E9%9D%A2%E5%9C%A84)
 - 低秩自适应 (Low-Rank Adaptation, LoRA)：冻结了预训练的模型权重，并将可训练的秩分解矩阵注入到 Transformer 架构的每一层，极大地减少了下游任务的可训练参数的数量，有效提升预训练模型在下游任务上的 finetune 效率
-    	<p align="center">
- 	 	 	 	 	 <img width="900" alt="lora" src="./3.大语言模型基础知识/lora.png">
- 	 	 	 	 </p>
+<p align="center">
+				<img width="900" alt="lora" src="./3.大语言模型基础知识/lora.png">
+			</p>
 
 
 
@@ -630,6 +630,9 @@ for k, v in layer_norm.named_parameters():
 #### 多轮对话数据如何计算损失
 [参考](https://zhuanlan.zhihu.com/p/647733151)
 - ChatGLM2的多轮对话训练方式如下图所示，只有最后一轮对话内容参与计算loss，其他的Assistant回复内容不参与计算loss，训练数据利用不充分，造成浪费。
+![chatglm2](./3.大语言模型基础知识/chatglm2.png)
+
+
 	<p align="center">
  	 	 	 	 	 <img width="900" alt="chatglm2 multiturn" src="./3.大语言模型基础知识/chatglm2.png">
  	 	 	 	 </p>
