@@ -27,9 +27,6 @@ if __name__ == "__main__":
     # 指定要遍历的目录
     directory_to_search = "./"
 
-    # 指定合并后的输出文件
-    output_file = "./README.md"
-
     # 获取目录中的文件夹
     exclude_dir_names = [".git", "tools"]
     dir_names = sorted(os.listdir(directory_to_search))
