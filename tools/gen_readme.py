@@ -32,19 +32,15 @@ def merge_markdown_files(markdown_files, output_file, content_str):
                 if sub_chapter_name != "ignore":
                     f.write(f"### {sub_chapter_name}\n")
                 # if "./images" in sub_content:
-                if "src=" in sub_content:
-                    pattern = r'src="(.*?)"'
-                    match = re.findall(pattern, sub_content)
-                    if match:
-                        for match_img_name in match:
-                            if "https://" not in match_img_name:
-                                sub_content = sub_content.replace(
-                                    match_img_name,
-                                    os.path.join(
-                                        dir_path,
-                                        match_img_name
-                                    ),
-                                )
+                pattern = r"!\[.*?\]\((.*?)\)"
+                match = re.findall(pattern, sub_content)
+                if match:
+                    for match_img_name in match:
+                        if "https://" not in match_img_name:
+                            sub_content = sub_content.replace(
+                                match_img_name,
+                                os.path.join(dir_path, match_img_name),
+                            )
                     # sub_content = sub_content.replace(
                     #     "./images",
                     #     os.path.join(
