@@ -405,10 +405,10 @@ for k, v in layer_norm.named_parameters():
 #### MLP 的切分为什么 A 采用列切割，B采用行切割？
 [参考](https://blog.csdn.net/zwqjoy/article/details/132507636)
 
-![MLP切割方式](./3.大语言模型基础知识/megatron3.png)
+![MLP切割方式](./3.大语言模型基础知识/./images/megatron3.png)
 
 
-![原因讲解](./3.大语言模型基础知识/megatron4.png)
+![原因讲解](./3.大语言模型基础知识/./images/megatron4.png)
 
 
 
@@ -440,9 +440,9 @@ for k, v in layer_norm.named_parameters():
 - P-tuning（GPT Understands, Too）
   - P-tuning 重新审视了关于模版的定义，放弃了“模版由自然语言构成”这一常规要求，从而将模版的构建转化为连续参数优化问题，虽然简单，但却有效
   - P-tuning直接使用[unused*]的token来构建模版，不关心模版的自然语言性
-    	
 
-![ptuning](./3.大语言模型基础知识/ptuning.png)
+
+![ptuning](./3.大语言模型基础知识/./images/ptuning.png)
 
 
 #### LoRA
@@ -450,7 +450,7 @@ for k, v in layer_norm.named_parameters():
 [参考1](https://zhuanlan.zhihu.com/p/617211910)，[参考2](https://zhuanlan.zhihu.com/p/643560888#:~:text=%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E6%8C%91%E6%88%98-,7.Lora%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98%E8%AE%B2%E4%B8%80%E4%B8%8B%EF%BC%9F,-%E5%89%8D%E9%9D%A2%E5%9C%A84)
 - 低秩自适应 (Low-Rank Adaptation, LoRA)：冻结了预训练的模型权重，并将可训练的秩分解矩阵注入到 Transformer 架构的每一层，极大地减少了下游任务的可训练参数的数量，有效提升预训练模型在下游任务上的 finetune 效率
 
-![lora](./3.大语言模型基础知识/lora.png)
+![lora](./3.大语言模型基础知识/./images/lora.png)
 
 
 
@@ -566,18 +566,18 @@ for k, v in layer_norm.named_parameters():
 
 - DPO 实现方式
 
-![dpo](./3.大语言模型基础知识/dpo.png)
+![dpo](./3.大语言模型基础知识/./images/dpo.png)
 
   - 直接优化 LM 来对齐人类偏好，无需建模 reward model 和强化学习阶段。基于 RL 的目标函数可以通过优化二分 cross entropy 目标来优化
   - DPO loss 表达为如下形式
-  	
 
-![dpo loss](./3.大语言模型基础知识/dpo_1.png)
+
+![dpo loss](./3.大语言模型基础知识/./images/dpo_1.png)
 
   其中 $y_w$ 的被人类喜好程度大于 $y_l$，DPO loss 的梯度如下
-  	
 
-![dpo gradient](./3.大语言模型基础知识/dpo_2.png)
+
+![dpo gradient](./3.大语言模型基础知识/./images/dpo_2.png)
 
   可以看出该 loss 的作用主要是增加喜好数据的 likelihood，降低非喜好数据的 likelihood，同时会基于隐私 reward 估计的错误程度进行加权。本文的实验表明了这种加权的重要性，因为没有加权系数的这种方法的简单版本可能会导致语言模型退化
 ### CoT、ToT介绍
@@ -602,13 +602,13 @@ for k, v in layer_norm.named_parameters():
 - ToT 基于思维链提示进行了总结，引导语言模型探索把思维作为中间步骤来解决通用问题。ToT 维护着一棵思维树，思维由连贯的语言序列表示，这个序列就是解决问题的中间步骤。使用这种方法，LM 能够自己对严谨推理过程的中间思维进行评估。LM 将生成及评估思维的能力与搜索算法（如广度优先搜索和深度优先搜索）相结合，在系统性探索思维的时候可以向前验证和回溯。
 
 
-![tot](./3.大语言模型基础知识/tot.png)
+![tot](./3.大语言模型基础知识/./images/tot.png)
 
 
 - ToT 需要针对不同的任务定义思维/步骤的数量以及每步的候选项数量。例如，论文中的“算 24 游戏”是一种数学推理任务，需要分成 3 个思维步骤，每一步都需要一个中间方程。而每个步骤保留最优的（best） 5 个候选项。ToT 完成算 24 的游戏任务要执行广度优先搜索（BFS），每步思维的候选项都要求 LM 给出能否得到 24 的评估：“sure/maybe/impossible”（一定能/可能/不可能） 。作者讲到：“目的是得到经过少量向前尝试就可以验证正确（sure）的局部解，基于‘太大/太小’的常识消除那些不可能（impossible）的局部解，其余的局部解作为‘maybe’保留。”每步思维都要抽样得到 3 个评估结果。整个过程如下图所示：
 
 
-![tot 24](./3.大语言模型基础知识/tot_24.png)
+![tot 24](./3.大语言模型基础知识/./images/tot_24.png)
 ### SFT训练
 #### SFT 训练如何提升训练效率
 - 数据去重降低重复数据带来的计算量：基于正则匹配，minhash 等算法
@@ -621,18 +621,18 @@ for k, v in layer_norm.named_parameters():
 [参考](https://zhuanlan.zhihu.com/p/647733151)
 - ChatGLM2的多轮对话训练方式如下图所示，只有最后一轮对话内容参与计算loss，其他的Assistant回复内容不参与计算loss，训练数据利用不充分，造成浪费。
 
-![chatglm2](./3.大语言模型基础知识/./3.大语言模型基础知识/chatglm2.png)
+![chatglm2](./3.大语言模型基础知识/./3.大语言模型基础知识/./images/chatglm2.png)
 
 
-	
 
-![chatglm2 multiturn](./3.大语言模型基础知识/./3.大语言模型基础知识/chatglm2.png)
+
+![chatglm2 multiturn](./3.大语言模型基础知识/./3.大语言模型基础知识/./images/chatglm2.png)
 
 
 - ChatGLM2 多轮训练优化方式如下，训练时，多轮对话中的每个回复都被充分利用。：
-	
 
-![chatglm2 multiturn optim](./3.大语言模型基础知识/chatglm2_optim.png)
+
+![chatglm2 multiturn optim](./3.大语言模型基础知识/./images/chatglm2_optim.png)
 ### 混合专家模型(MOE)
 #### 混合专家模型 (Mixture of Experts, MOE) 是什么
 [参考1](https://www.tensorops.ai/post/what-is-mixture-of-experts-llm), [参考2](https://zhuanlan.zhihu.com/p/674698482), [参考3](https://arxiv.org/pdf/1701.06538.pdf)
@@ -647,7 +647,7 @@ for k, v in layer_norm.named_parameters():
   - Gating Network：通过 Gating Network 来选择具体要使用的专家模型。Gating Network 一般是通过 softmax 门控函数通过专家或 token 对概率分布进行建模，并选择前 K 个。例如，如果模型有三个专家，输出的概率可能为 0.5 和 0.4、0.1，这意味着第一个专家对处理此数据的贡献为 50%，第二个专家为 40%，第二个专家为 10%，这个时候的 K 就可以选择为 2，我们认为前两个专家模型的建议会更好，可以用于更加精确的回答中，而第三个专家模型的建议可以用于更加富有创意性的答案中。
   - Expert：在训练的过程中，输入的数据被门控模型分配到不同的专家模型中进行处理；在推理的过程中，被门控选择的专家会针对输入的数据，产生相应的输出。这些输出最后会和每个专家模型处理该特征的能力分配的权重进行加权组合，形成最终的预测结果。
 
-![MOE](./3.大语言模型基础知识/MOE.png)
+![MOE](./3.大语言模型基础知识/./images/MOE.png)
 
 - MOE 代码实现：[MOE 代码示例](https://www.zhihu.com/tardis/zm/art/673048264?source_id=1003)
 
