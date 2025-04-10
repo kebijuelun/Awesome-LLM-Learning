@@ -25,6 +25,8 @@
 	- [7.混合专家模型(MOE)](3.大语言模型基础知识/7.混合专家模型(MOE).md)
 - [4.大语言模型推理](4.大语言模型推理)
 	- [1.Huggingface推理参数介绍](4.大语言模型推理/1.Huggingface推理参数介绍.md)
+	- [2.KVCache](4.大语言模型推理/2.KVCache.md)
+	- [3.LLM推理成本介绍](4.大语言模型推理/3.LLM推理成本介绍.md)
 - [5.大语言模型应用](5.大语言模型应用)
 	- [1.LangChain介绍](5.大语言模型应用/1.LangChain介绍.md)
 - [6.大语言模型前沿分享](6.大语言模型前沿分享)
@@ -474,6 +476,44 @@ for k, v in layer_norm.named_parameters():
   - Llama2 在大多数基准测试中都优于开源聊天模型，并且基于有用性和安全性方向进行人工评估，期望称为封闭源模型（chatgpt等）的合适替代品
   - 提供了对 Llama 2-Chat 微调和安全改进的方法的详细描述，为开源社区做出贡
 
+#### Llama3
+[参考](https://zhuanlan.zhihu.com/p/693428105)
+
+- llama3 与 llama2 的模型架构完全相同，只是 model 的一些配置（主要是维度）有些不同，llama2 推理的工程基本可以无缝支持 llama3
+- llama3-8B 相比于 llama2-7B 的模型参数变化原因：
+  - vocab_size：32000 ->128256。词汇表的扩大，导致 embedding 参数的增大 (128256-32000)*4096*2 Byte=752MB，另外模型最后一层 lm_head 的输出维度就是 vocab_size，所以 lm_head 的参数同样增大 752MB，总计带来模型增大 1504MB
+  - max_position_embeddings：4096->8192。也即 context window 扩大了，训练时输入的序列长度增大，推理能支持的序列长度增大，没有实际计算的差别。
+  - num_key_value_heads：32 -> 8。即使用了 GQA，因为 num_attention_heads 维持32，也就是计算时 key、value 要复制 4 份。参数量会下降，K_proj、V_proj 的参数矩阵会降为 llama2-7B 的 1/4，共计减少 32 * 4096 * 4096 * 2 * 2 / 4 * 3 Byte（1536MB）
+  - intermediate_size：11008->14336。只是 FFN 时的中间维度变了，计算范式不变。参数量增大：32 * 4096 * (14336-11008) * 3 * 2 / 1024 / 1024 Byte (2496MB)
+  - 综上：通过以上几个设置和维度的变化，最终带来模型增大了2464M，这也是7B->8B的原因，本质上的计算模式没有变化
+- 效果提升主要是数据工程
+  - 数据量：预训练 llama3 用了超15T token（来自公开可获取的来源），是llama2的7倍多，其中代码相关的数据是llama2的4倍多；Fine-tuning阶段的数据除了公开能获取的 instruction datasets, 还有自己制作的超过1千万人工标注 examples。
+
+#### Llama4
+[参考](https://blog.csdn.net/kebijuelun/article/details/147051260)
+- 预训练
+  - Llama 系列首次引入了 Mixture-of-Experts (MoE，专家混合) 架构，MoE 的核心思想是拥有多个“专家”子模型，在处理每个输入时仅激活一部分参数，从而大幅提升参数规模却不显著增加推理开销
+  - 提出了 iRoPE (interleaved RoPE)，部分层使用了 NoPE，即不使用 rope 作为位置编码，另外大部分层使用 RoPE 进行编码。另外采用了 inference time temperature scaling 来提升长文本泛化能力
+  - 使用 30 万亿标记的训练数据，涵盖 200 种语言，其中超过 100 种语言的标记数超过 10 亿，相比 Llama 3 的 15 万亿标记翻倍
+- 后训练：包括监督微调（SFT）、在线强化学习（RL）和直接偏好优化（DPO），特别针对推理、编码和数学问题进行优化。SFT 和 DPO 使用小规模训练的原因是发现 SFT 和 DPO 会过度约束模型，限制了在线 RL 阶段的探索。后训练分为三个阶段：
+  - 小规模 SFT：删除了 50% 的 easy 难度数据
+  - 在线强化学习（RL）
+  - 小规模直接偏好优化（DPO）：解决模型回复质量问题，在模型智能程度与对话能力之间取得平衡
+
+
+- Llama4 的三个不同规模大小的模型
+
+| 模型        | 活跃参数       | 总参数         | 专家数 | 上下文窗口   | 备注                                   |
+|-------------|----------------|----------------|--------|--------------|----------------------------------------|
+| Scout       | 17B           | 109B           | 16     | 10M          | 适合单 GPU 运行，性能优于 Gemini 2.0 Flash-Lite |
+| Maverick    | 17B           | 400B           | 128    | 未指定       | 性能优于 GPT-4o，成本效益高             |
+| Behemoth    | 288B          | ~2T            | 16     | 未指定       | 仍在训练中，预计超越 GPT-4.5 等模型     |
+
+  - **Scout**：活跃参数 17 亿（17B），总参数 1090 亿（109B），16 个专家，上下文窗口达 1000 万标记（10M）。它能运行在单个 NVIDIA H100 GPU 上，适合资源有限的用户。
+  - **Maverick**：活跃参数 17 亿，总参数 4000 亿（400B），128 个专家，性能表现优于 GPT-4o 和 Gemini 2.0 Flash，成本效益高。
+  - **Behemoth**：活跃参数 2880 亿（288B），总参数约 2 万亿（~2T），16 个专家，目前仍在训练中，预计在数学、多语言和图像基准测试中表现卓越。
+
+
 #### ChatGLM and ChatGLM2
 - ChatGLM
   - 使用 prefix LM：prefix部分的token互相能看到
@@ -500,7 +540,7 @@ for k, v in layer_norm.named_parameters():
     - 首先，从公共网站收集了一个包含超过 1100 万个语义概念的交错多语言视觉-语言数据集
     - 其次，在训练流程中精心制定了预训练和微调策略，采用了主要是英文和中文的纯文本和图像-文本混合训练数据。因此，InternLM-XComposer 在理解各种图像内容和提供广泛的多语知识方面表现出了出色的能力。
 - 所提出的 InternLM-XComposer 在文本-图像理解和组合方面表现出卓越的能力。它在各种领先的视觉-语言大型模型的基准测试中取得 SOTA 的成绩，包括英文的 MME 基准测试、MMBench、Seed-Bench 以及中文的 MMBench-CN 和 CCBench（中国文化基准测试）的评估。值得注意的是，我们的方法在中文语言的基准测试中，即MMBench-CN 和 CCBench 上显著优于现有框架，展示出卓越的多语知识能力。
-	
+
 
 ![InternLM-XComposer](https://img-blog.csdnimg.cn/01142ef12ffd4199a4b7762b18e1d59b.png)
 
@@ -511,7 +551,7 @@ for k, v in layer_norm.named_parameters():
   - 它结合了编码器-解码器架构（Raffel et al., 2020）与扩散过程。编码器将自然语言映射为连续表示，扩散模型使用这一表示作为额外条件来去噪随机高斯噪声输入。为了生成语法正确的代码，我们随后将去噪后的嵌入输入到 transformer 解码器，通过完整的自注意力和与嵌入话语的交叉注意力，获得代码 token 的概率分布。最后，我们在每个索引选择最高概率的 token。
   - 为了预训练 CODEFUSION 进行代码生成，我们将连续段落去噪（CPD）任务扩展到代码领域。具体来说，我们只对代码中对应于标识符或目标语言内置关键词的 token 应用噪声。这个去噪任务使模型能够学习关键代码 token（如变量名、函数名和控制流内置函数）之间的关系。
   - 我们发现，与自回归模型相比，CODEFUSION 产生了更多样化的代码（n-gram 比例更高，嵌入相似性更低，编辑距离更高）。CPD 目标，它使模型偏向于学习以语境感知的方式去除噪声，并配以能够访问完整去噪表示的解码器，共同使 CODEFUSION 在与 GENIE 比较时（一个文本扩散模型），生成了 48.5% 更多语法正确的代码（平均跨三种语言）。我们在三种不同语言的自然语言到代码上评估 CODEFUSION：Python，Bash 和 Microsoft Excel 中的条件格式化规则。我们的结果表明，CODEFUSION的（7500万参数）top-1 结果与更大的最新系统（3.5亿–1750亿参数）相当或更好。在 top-3 和 top-5 中，CODEFUSION 的表现优于所有基线。
-  	
+
 
 ![CODEFUSION](https://img-blog.csdnimg.cn/d5863f62deb44ec6bff63d7ecec02963.png)
 
@@ -541,7 +581,7 @@ for k, v in layer_norm.named_parameters():
   - Code Llama 在多个代码基准测试中达到了开放模型中的最先进性能，分别在 HumanEval 和 MBPP 上取得了高达 53% 和 55% 的分数（优于 Llama2 70B），MultiPL-E 上精度优于所有开源模型
   - 重点是和 Llama2 开源协议一样，Code Llama 开源并允许进行研究和商业用途
 - code llama 各系列模型训练流程如下：
-	
+
 
 ![Code Llama](https://img-blog.csdnimg.cn/473f38e248f04010b74578b9b0048dfe.png)
 ### RLHF介绍
@@ -749,6 +789,28 @@ GPT-3.5 大约有 175B 参数。然而，当使用 MoE 时，计算总参数数�
       scores[i, banned_tokens] = -float("inf")
     ```
     注意这里将 `logits` 置为负无穷后，经过 softmax 函数后就实现将概率置 0 了。
+### KVCache
+#### 什么是 KV Cache？
+
+### LLM推理成本介绍
+#### 为什么 LLM 输出 token 的价格比输入 token 高？
+参考： [为什么 output token 的价格比 input token 更贵？](https://blog.csdn.net/sinat_37574187/article/details/141125155), [大模型output token为什么比input token贵？](https://juejin.cn/post/7403655505716690978), [为什么使用大模型API时，output token 的价格比 input token 更贵？](https://blog.csdn.net/qq_59084968/article/details/141164377)
+- 从以下 OpenAI API 价格表中可以看出，output token 的价格比 input token 的价格要高，一般 output token 的价格是 input token 的 2-4 倍。
+
+![OpenAI API 价格](./4.大语言模型推理/./images/openai_api_price.png)
+
+- 在 KV cache（键值缓存）的支持下，大模型生成 token 分为两个阶段：
+  - 预填充（prefill）
+    - 在预填充阶段，模型会并行处理输入的 prompt（即 input token），生成 KV cache。这一步骤包括一次完整的前向传播（forward），并输出第一个 token。这个过程的时间主要由 input token 决定，因为它们需要进行一次全面的计算来初始化整个生成过程。
+  - 解码（decoding）
+    - 解码阶段是逐个生成下一个 token 的过程。在这一步中，output token 的数量决定了需要进行多少次前向传播。虽然每次前向传播由于 KV cache 的存在而更快，但这仍然需要模型多次计算，逐步生成每一个后续的 token。
+
+- 计算量和内存角度来看 input token 与 output token 差异不大
+  - 从计算量的角度来看，对于输入的 D 个 token，和输出 D 个token来说，FLOPs 都大约是 2ND，其中 N 为参数量。至于为什么 FLOPs 为什么是 2ND， 可以看这篇：[学妹问：“反向传播的计算量是前向传播计算量的几倍？”](https://mp.weixin.qq.com/s?__biz=MzUyOTA5OTcwMg==&mid=2247486124&idx=1&sn=c9294e6696047bb616e0f640fca3ff5f&chksm=fa677475cd10fd63f99450f3d6d1287e79a38a3a99eeee28515e84c0e982d745e7d51a4ac65f&scene=21#wechat_redirect)。
+  - 从内存角度来看，输入 token 和 QKV 等矩阵大小和 输出 token 的也差不太多，只不过输出 token 采用 KV Cache 的形式。
+- input token 与 output token 成本差异原因是资源利用率不同
+  - 既然计算量和内存占用都差不多，从资源的角度来讲，成本是差不多的。那最终成本究竟差在哪里呢？其实是差在资源的利用率上。要知道 GPU 在运算的时候，既有计算，又有数据通信。这就存在一个最佳的 ops:bytes ratio。通俗点来讲，就是每读取一份数据 (比如一个 FP16/BF16)， 应该执行多少 FLOPs。如果算的比读的快，那通信就是瓶颈，因为这个时候 GPU 的 SM 在等待。如果算的比读的慢，那计算就是瓶颈，这个时候通信需要等待。大模型训练，大多数情况下，通信是瓶颈，所以都是算的快，读的慢。这样计算下来，整体的 MFU (Model FLOPs utilization) 很难打满。经过这么长时间的优化，目前大模型的训练 MFU 在50-60% 就已经很厉害了。
+  - **对于 D 个输入 token 来说，模型只需要执行一个 forward 计算，可以充分的并行，整个计算过程的利用率能接近训练的最高水平。然而对于 输出 token 来说，必须是一个 token 一个 token 的生成，对于 D 个输出 token 来说，需要执行 D 次 forward 操作**。本来通信就是瓶颈，现在 D 次 forward 的额外通信更是雪上加霜。虽然现在也有batch 上，还有动态填充等优化，但是 GPU 利用率上来说，输出是远低于输入的。
 ## 大语言模型应用
 ### LangChain介绍
 #### LangChain 介绍
