@@ -38,7 +38,7 @@
 
 - Transformer 模型的自注意力（Self Attention）机制涉及三种线性变换：查询（Q）、键（K）、值（V），以及通过计算注意力权重和加权求和来生成最终的输出。以下是自注意力机制的公式：
 
-  - 假设输入序列为 $X \in \mathbb{R}^{L \times d}$，其中 $L$ 是序列长度，$d$ 是特征维度。自注意力层中的线性变换矩阵为 $W_q \in \mathbb{R}^{d \times d_k}$、$W_k \in \mathbb{R}^{d \times d_k}$ 和 $W_v \in \mathbb{R}^{d \times d_v}$，其中 $d_k$ 和 $d_v$ 是分割查询、键和值时的维度。
+  - 假设输入序列为 $X \in \mathbb{R}^{L \times d}$，其中 $L$ 是序列长度，$d$ 是特征维度。自注意力层中的线性变换矩阵为 $W_q \in \mathbb{R}^{d \times d_k}$、 $W_k \in \mathbb{R}^{d \times d_k}$ 和 $W_v \in \mathbb{R}^{d \times d_v}$，其中 $d_k$ 和 $d_v$ 是分割查询、键和值时的维度。
   - 查询（Q）、键（K）和值（V）的线性变换：
 
     - $Q=X⋅W_{q}$
@@ -141,9 +141,9 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
 
 - RoPE
   - 二维情况下用复数表示的 RoPE
-    	
 
-![在这里插入图片描述](https://img-blog.csdnimg.cn/b3760f402fe84096b8c01be93f1d8fe5.png) 
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/b3760f402fe84096b8c01be93f1d8fe5.png)
 
     根据复数乘法的几何意义，该变换实际上对应着向量的旋转，所以我们称之为“旋转式位置编码”
   - RoPE通过绝对位置编码的方式实现相对位置编码，综合了绝对位置编码和相对位置编码的优点
@@ -173,9 +173,9 @@ print(output.size())  # 输出: torch.Size([16, 10, 512])
   - 论文名称：EXTENDING CONTEXT WINDOW OF LARGE LANGUAGE MODELS VIA POSITION INTERPOLATION
   - 论文链接：https://arxiv.org/pdf/2306.1559
   - 方法：位置插值线性向下缩放了输入位置索引以匹配原始的上下文窗口大小，而不是外推超过训练时所用的上下文长度，因为这可能会导致灾难性的较高的注意力分数，从而完全破坏了自注意力机制。
-    	
 
-![PI interpolation](./1.深度学习基础知识/./images/PI.png) 
+
+![PI interpolation](./1.深度学习基础知识/./images/PI.png)
 
     - 左半部分为预训练阶段的位置向量范围[0,2048]
     - 右上角为长度外推的部分(2048,4096]
