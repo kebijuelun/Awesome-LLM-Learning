@@ -3,4 +3,3 @@ node_modules
 .vitepress/dist
 *.log
 .DS_Store
-package-lock.json
