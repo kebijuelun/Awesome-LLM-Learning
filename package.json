@@ -1,0 +1,16 @@
+{
+  "name": "awesome-llm-learning",
+  "version": "1.0.0",
+  "description": "Awesome LLM Learning Documentation",
+  "scripts": {
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0-rc.36",
+    "vue": "^3.3.13",
+    "markdown-it-mathjax3": "^4.3.2"
+  }
+}
+

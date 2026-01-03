@@ -1,4 +1,7 @@
 # Awesome-LLM-Learning [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
+
+> 📖 **在线阅读**: [https://kebijuelun.github.io/Awesome-LLM-Learning/](https://kebijuelun.github.io/Awesome-LLM-Learning/)
+
 ## 引言
 欢迎来到本 Repo！这里是一个专注于大语言模型学习的仓库，旨在为大语言模型学习入门者和大语言模型研发岗位的面试准备者提供全面的基础知识。
 
