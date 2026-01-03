@@ -19,45 +19,33 @@ hero:
 features:
   - icon: 1️⃣
     title: 深度学习基础知识
-    details: |
-      [1. Transformer基础](/1.深度学习基础知识/1.Transformer基础)  
-      [2. 深度神经网络基础](/1.深度学习基础知识/2.深度神经网络基础)
+    details: Transformer基础、深度神经网络基础
+    link: /1.深度学习基础知识/1.Transformer基础
     
   - icon: 2️⃣
     title: 自然语言处理基础知识
-    details: |
-      [1. 分词器 (Tokenizer)](/2.自然语言处理基础知识/1.分词器\(Tokenizer\))  
-      [2. 经典NLP模型](/2.自然语言处理基础知识/2.经典NLP模型)  
-      [3. 困惑度 (Perplexity)](/2.自然语言处理基础知识/3.困惑度\(perplexity\))
+    details: 分词器、经典NLP模型、困惑度
+    link: /2.自然语言处理基础知识/1.分词器(Tokenizer)
 
   - icon: 3️⃣
     title: 大语言模型基础知识
-    details: |
-      [1. 训练框架介绍](/3.大语言模型基础知识/1.训练框架介绍\(Megatron-lm、DeepSpeed\))  
-      [2. 参数高效微调 (PEFT)](/3.大语言模型基础知识/2.参数高效微调\(PEFT\))  
-      [3. 经典开源LLM介绍](/3.大语言模型基础知识/3.经典开源LLM介绍)  
-      [4. RLHF介绍](/3.大语言模型基础知识/4.RLHF介绍)  
-      [5. CoT、ToT介绍](/3.大语言模型基础知识/5.CoT、ToT介绍)  
-      [6. SFT训练](/3.大语言模型基础知识/6.SFT训练)  
-      [7. 混合专家模型 (MOE)](/3.大语言模型基础知识/7.混合专家模型\(MOE\))
+    details: 训练框架、PEFT、开源LLM、RLHF、CoT/ToT、SFT、MOE
+    link: /3.大语言模型基础知识/1.训练框架介绍(Megatron-lm、DeepSpeed)
 
   - icon: 4️⃣
     title: 大语言模型推理
-    details: |
-      [1. Huggingface推理参数介绍](/4.大语言模型推理/1.Huggingface推理参数介绍)  
-      [2. KVCache](/4.大语言模型推理/2.KVCache)  
-      [3. LLM推理成本介绍](/4.大语言模型推理/3.LLM推理成本介绍)
+    details: Huggingface推理、KVCache、推理成本
+    link: /4.大语言模型推理/1.Huggingface推理参数介绍
 
   - icon: 5️⃣
     title: 大语言模型应用
-    details: |
-      [1. LangChain介绍](/5.大语言模型应用/1.LangChain介绍)
+    details: LangChain介绍及应用实践
+    link: /5.大语言模型应用/1.LangChain介绍
 
   - icon: 6️⃣
     title: 大语言模型前沿分享
-    details: |
-      [1. LLM相关博客分享](/6.大语言模型前沿分享/1.LLM相关博客分享)  
-      [2. LLM相关论文分享](/6.大语言模型前沿分享/2.LLM相关论文分享)
+    details: LLM相关博客分享、论文分享
+    link: /6.大语言模型前沿分享/1.LLM相关博客分享
 ---
 
 <style>
