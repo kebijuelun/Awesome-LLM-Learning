@@ -6,12 +6,12 @@ hero:
   text: "大语言模型学习资料汇总"
   tagline: 专注于大语言模型学习的完整知识体系
   image:
-    src: /Awesome-LLM-Learning/.vitepress/theme/logo.svg
+    src: /.vitepress/theme/logo.svg
     alt: Awesome LLM Learning
   actions:
     - theme: brand
       text: 开始学习
-      link: /Awesome-LLM-Learning/1.深度学习基础知识/1.Transformer基础
+      link: /1.深度学习基础知识/1.Transformer基础
     - theme: alt
       text: GitHub
       link: https://github.com/kebijuelun/Awesome-LLM-Learning
@@ -150,10 +150,10 @@ hero:
   </h2>
   <ul class="chapter-list">
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/1.深度学习基础知识/1.Transformer基础" class="chapter-link">1. Transformer基础</a>
+      <a href="/1.深度学习基础知识/1.Transformer基础" class="chapter-link">1. Transformer基础</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/1.深度学习基础知识/2.深度神经网络基础" class="chapter-link">2. 深度神经网络基础</a>
+      <a href="/1.深度学习基础知识/2.深度神经网络基础" class="chapter-link">2. 深度神经网络基础</a>
     </li>
   </ul>
 </div>
@@ -165,13 +165,13 @@ hero:
   </h2>
   <ul class="chapter-list">
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/2.自然语言处理基础知识/1.分词器(Tokenizer)" class="chapter-link">1. 分词器 (Tokenizer)</a>
+      <a href="/2.自然语言处理基础知识/1.分词器(Tokenizer)" class="chapter-link">1. 分词器 (Tokenizer)</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/2.自然语言处理基础知识/2.经典NLP模型" class="chapter-link">2. 经典NLP模型</a>
+      <a href="/2.自然语言处理基础知识/2.经典NLP模型" class="chapter-link">2. 经典NLP模型</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/2.自然语言处理基础知识/3.困惑度(perplexity)" class="chapter-link">3. 困惑度 (Perplexity)</a>
+      <a href="/2.自然语言处理基础知识/3.困惑度(perplexity)" class="chapter-link">3. 困惑度 (Perplexity)</a>
     </li>
   </ul>
 </div>
@@ -183,25 +183,25 @@ hero:
   </h2>
   <ul class="chapter-list">
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/3.大语言模型基础知识/1.训练框架介绍(Megatron-lm、DeepSpeed)" class="chapter-link">1. 训练框架介绍 (Megatron-lm、DeepSpeed)</a>
+      <a href="/3.大语言模型基础知识/1.训练框架介绍(Megatron-lm、DeepSpeed)" class="chapter-link">1. 训练框架介绍 (Megatron-lm、DeepSpeed)</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/3.大语言模型基础知识/2.参数高效微调(PEFT)" class="chapter-link">2. 参数高效微调 (PEFT)</a>
+      <a href="/3.大语言模型基础知识/2.参数高效微调(PEFT)" class="chapter-link">2. 参数高效微调 (PEFT)</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/3.大语言模型基础知识/3.经典开源LLM介绍" class="chapter-link">3. 经典开源LLM介绍</a>
+      <a href="/3.大语言模型基础知识/3.经典开源LLM介绍" class="chapter-link">3. 经典开源LLM介绍</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/3.大语言模型基础知识/4.RLHF介绍" class="chapter-link">4. RLHF介绍</a>
+      <a href="/3.大语言模型基础知识/4.RLHF介绍" class="chapter-link">4. RLHF介绍</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/3.大语言模型基础知识/5.CoT、ToT介绍" class="chapter-link">5. CoT、ToT介绍</a>
+      <a href="/3.大语言模型基础知识/5.CoT、ToT介绍" class="chapter-link">5. CoT、ToT介绍</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/3.大语言模型基础知识/6.SFT训练" class="chapter-link">6. SFT训练</a>
+      <a href="/3.大语言模型基础知识/6.SFT训练" class="chapter-link">6. SFT训练</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/3.大语言模型基础知识/7.混合专家模型(MOE)" class="chapter-link">7. 混合专家模型 (MOE)</a>
+      <a href="/3.大语言模型基础知识/7.混合专家模型(MOE)" class="chapter-link">7. 混合专家模型 (MOE)</a>
     </li>
   </ul>
 </div>
@@ -213,13 +213,13 @@ hero:
   </h2>
   <ul class="chapter-list">
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/4.大语言模型推理/1.Huggingface推理参数介绍" class="chapter-link">1. Huggingface推理参数介绍</a>
+      <a href="/4.大语言模型推理/1.Huggingface推理参数介绍" class="chapter-link">1. Huggingface推理参数介绍</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/4.大语言模型推理/2.KVCache" class="chapter-link">2. KVCache</a>
+      <a href="/4.大语言模型推理/2.KVCache" class="chapter-link">2. KVCache</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/4.大语言模型推理/3.LLM推理成本介绍" class="chapter-link">3. LLM推理成本介绍</a>
+      <a href="/4.大语言模型推理/3.LLM推理成本介绍" class="chapter-link">3. LLM推理成本介绍</a>
     </li>
   </ul>
 </div>
@@ -231,7 +231,7 @@ hero:
   </h2>
   <ul class="chapter-list">
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/5.大语言模型应用/1.LangChain介绍" class="chapter-link">1. LangChain介绍</a>
+      <a href="/5.大语言模型应用/1.LangChain介绍" class="chapter-link">1. LangChain介绍</a>
     </li>
   </ul>
 </div>
@@ -243,10 +243,10 @@ hero:
   </h2>
   <ul class="chapter-list">
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/6.大语言模型前沿分享/1.LLM相关博客分享" class="chapter-link">1. LLM相关博客分享</a>
+      <a href="/6.大语言模型前沿分享/1.LLM相关博客分享" class="chapter-link">1. LLM相关博客分享</a>
     </li>
     <li class="chapter-item">
-      <a href="/Awesome-LLM-Learning/6.大语言模型前沿分享/2.LLM相关论文分享" class="chapter-link">2. LLM相关论文分享</a>
+      <a href="/6.大语言模型前沿分享/2.LLM相关论文分享" class="chapter-link">2. LLM相关论文分享</a>
     </li>
   </ul>
 </div>
