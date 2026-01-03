@@ -3,7 +3,6 @@ import { h } from 'vue'
 import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
-import ChapterCards from './ChapterCards.vue'
 
 export default {
   extends: DefaultTheme,
@@ -13,7 +12,6 @@ export default {
     })
   },
   enhanceApp({ app, router, siteData }) {
-    app.component('ChapterCards', ChapterCards)
+    // ...
   }
 } satisfies Theme
-
