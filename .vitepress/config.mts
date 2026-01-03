@@ -14,7 +14,12 @@ export default defineConfig({
     ['link', { rel: 'icon', href: '/Awesome-LLM-Learning/favicon.ico' }],
     ['meta', { name: 'theme-color', content: '#3eaf7c' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
-    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }]
+    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
+    // MathJax support
+    ['script', { 
+      src: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
+      async: 'true'
+    }]
   ],
 
   themeConfig: {
