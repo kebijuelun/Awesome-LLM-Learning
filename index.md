@@ -6,7 +6,7 @@ hero:
   text: "大语言模型学习资料汇总"
   tagline: 专注于大语言模型学习的完整知识体系
   image:
-    src: /.vitepress/theme/logo.svg
+    src: /logo.svg
     alt: Awesome LLM Learning
   actions:
     - theme: brand
