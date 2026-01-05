@@ -115,4 +115,15 @@ features:
   color: var(--vp-c-brand-1);
   transform: translateX(4px);
 }
+
+/* Hide the fallback note on the VitePress home layout */
+.VPHome .gh-pages-fallback {
+  display: none;
+}
 </style>
+
+<div class="gh-pages-fallback">
+  <h1>Awesome LLM Learning</h1>
+  <p>当前页面由 GitHub Pages 的默认 Jekyll 渲染器生成。</p>
+  <p>请在仓库 Settings → Pages 中将 Source 切换为 GitHub Actions，以加载 VitePress 站点。</p>
+</div>
